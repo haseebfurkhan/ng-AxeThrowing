@@ -1,8 +1,14 @@
 import {
-  Component, Input, ElementRef, AfterViewInit, ViewChild, OnInit, HostListener
-} from '@angular/core';
-import { fromEvent } from 'rxjs';
-import { switchMap, takeUntil, pairwise } from 'rxjs/operators'
+  Component,
+  Input,
+  ElementRef,
+  AfterViewInit,
+  ViewChild,
+  OnInit,
+  HostListener
+} from "@angular/core";
+import { fromEvent } from "rxjs";
+import { switchMap, takeUntil, pairwise } from "rxjs/operators";
 
 export interface BoardCell {
   value: number;
@@ -15,16 +21,15 @@ export interface Board {
 }
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  selector: "app-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.css"]
 })
 export class AppComponent implements OnInit, AfterViewInit {
+  @ViewChild("canvasVertical") public canvasVertical: ElementRef;
+  @ViewChild("canvasHorizontal") public canvasHorizontal: ElementRef;
 
-  @ViewChild('canvasVertical') public canvasVertical: ElementRef;
-  @ViewChild('canvasHorizontal') public canvasHorizontal: ElementRef;
-
-  title = 'Darts';
+  title = "Axe Throwing Game";
   boardData: Board[] = this.getBoardValues();
 
   xRunning = false;
@@ -47,7 +52,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   totalChances: any[] = [1, 1, 1, 1, 1, 1];
   scores: any[] = new Array();
   gameOver = false;
-  @HostListener('window:keydown.space') spaceEvent() {
+  @HostListener("window:keydown.space") spaceEvent() {
     this.hit();
   }
 
@@ -58,20 +63,20 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
   public ngAfterViewInit() {
     const canvasEl: HTMLCanvasElement = this.canvasVertical.nativeElement;
-    this.cx = canvasEl.getContext('2d');
+    this.cx = canvasEl.getContext("2d");
     canvasEl.width = this.widthY;
     canvasEl.height = this.heightY;
     this.cx.lineWidth = 10;
-    this.cx.lineCap = 'round';
-    this.cx.strokeStyle = '#000';
+    this.cx.lineCap = "round";
+    this.cx.strokeStyle = "#000";
 
     const canvasE2: HTMLCanvasElement = this.canvasHorizontal.nativeElement;
-    this.cx2 = canvasE2.getContext('2d');
+    this.cx2 = canvasE2.getContext("2d");
     canvasE2.width = this.widthX;
     canvasE2.height = this.heightX;
     this.cx2.lineWidth = 10;
-    this.cx2.lineCap = 'round';
-    this.cx2.strokeStyle = '#000';
+    this.cx2.lineCap = "round";
+    this.cx2.strokeStyle = "#000";
 
     window.requestAnimationFrame(() => this.loopY(canvasEl));
     window.requestAnimationFrame(() => this.loopX(canvasE2));
@@ -91,7 +96,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
-
   drawLineX(canvasE2: HTMLCanvasElement) {
     this.cx2.beginPath();
     this.cx2.moveTo(this.posX, 10);
@@ -100,44 +104,40 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   moveLineX(canvasE2: HTMLCanvasElement) {
-    this.posX += this.speedX
+    this.posX += this.speedX;
     if (this.posX < 0 || this.posX > canvasE2.width) {
       this.speedX = this.speedX * -1;
     }
   }
 
   loopX(canvasE2: HTMLCanvasElement) {
-    // clear old frame;        
+    // clear old frame;
     this.cx2.clearRect(0, 0, this.widthX, this.widthX);
     this.moveLineX(canvasE2);
     this.drawLineX(canvasE2);
     window.requestAnimationFrame(() => this.loopX(canvasE2));
   }
 
-
   loopY(canvasEl: HTMLCanvasElement) {
-    // clear old frame;        
+    // clear old frame;
     this.cx.clearRect(0, 0, this.heightY, this.heightY);
     this.moveLineY(canvasEl);
     this.drawLineY(canvasEl);
     window.requestAnimationFrame(() => this.loopY(canvasEl));
   }
 
-
   hit() {
     if (this.xRunning) {
       this.stopXAxis();
-      this.startYAxis()
-    }
-    else if (this.yRunning) {
+      this.startYAxis();
+    } else if (this.yRunning) {
       this.stopYAxis();
       this.launch();
       this.totalChances.pop();
       this.reset();
       if (this.totalChances.length > 0) {
         this.startXAxis();
-      }
-      else {
+      } else {
         this.gameOver = true;
       }
     }
@@ -156,10 +156,9 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     for (let i = 0; i < 10; i++) {
       for (let j = 0; j < 10; j++) {
-        this.boardData[i].value[j].imgSource = '';
+        this.boardData[i].value[j].imgSource = "";
       }
     }
-
 
     this.startXAxis();
   }
@@ -195,22 +194,20 @@ export class AppComponent implements OnInit, AfterViewInit {
     if (xIndex >= 10) {
       xIndex = 9;
     }
-    console.log(yIndex)
-    console.log(xIndex)
-    console.log(this.boardData[9].value[0])
+    console.log(yIndex);
+    console.log(xIndex);
+    console.log(this.boardData[9].value[0]);
     try {
-      this.boardData[yIndex].value[xIndex].imgSource = '../assets/aimed.png';
+      this.boardData[yIndex].value[xIndex].imgSource = "../assets/aimed.png";
       var score = this.boardData[yIndex].value[xIndex].weight;
       this.scores.push(score);
       this.totalScore = this.totalScore + score;
     } catch (error) {
-
-      this.boardData[0].value[0].imgSource = '../assets/aimed.png';
+      this.boardData[0].value[0].imgSource = "../assets/aimed.png";
       var score = this.boardData[0].value[0].weight;
       this.scores.push(score);
       this.totalScore = this.totalScore + score;
     }
-
   }
 
   playAudio() {
@@ -222,11 +219,13 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   startXAxis() {
     this.xRunning = true;
-    this.speedX = 10;
+    this.speedX =
+      10 * (this.totalChances.length < 6 ? 6 - this.totalChances.length : 1);
   }
 
   startYAxis() {
-    this.speedY = 10;
+    this.speedY =
+      10 * (this.totalChances.length < 6 ? 6 - this.totalChances.length : 1);
     this.yRunning = true;
   }
 
@@ -240,32 +239,34 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.speedY = 0;
   }
 
-
   getBoardValues() {
     let board: Board[] = new Array();
-    var num: number = 0
+    var num: number = 0;
     var cell: number = 0;
 
     for (num = 0; num < 10; num++) {
       let boardrow: BoardCell[] = new Array();
       for (cell = 0; cell < 10; cell++) {
         let data = {} as BoardCell;
-        data.imgSource = '';
+        data.imgSource = "";
         data.value = cell;
 
-        if ((num == 4 && cell == 4) ||
+        if (
+          (num == 4 && cell == 4) ||
           (num == 4 && cell == 5) ||
           (num == 5 && cell == 4) ||
-          (num == 5 && cell == 5)) {
+          (num == 5 && cell == 5)
+        ) {
           data.weight = 25;
-        }
-        else if ((num == 3 && (cell > 3 && cell < 6)) ||
-          (num == 4 && (cell > 2 && cell < 7) ||
+        } else if (
+          (num == 3 && (cell > 3 && cell < 6)) ||
+          ((num == 4 && (cell > 2 && cell < 7)) ||
             (num == 5 && (cell > 2 && cell < 7)) ||
-            (num == 6 && (cell > 3 && cell < 6)))) {
+            (num == 6 && (cell > 3 && cell < 6)))
+        ) {
           data.weight = 20;
-        }
-        else if ((num == 2 && (cell > 3 && cell < 6)) ||
+        } else if (
+          (num == 2 && (cell > 3 && cell < 6)) ||
           (num == 3 && (cell > 2 && cell < 7)) ||
           (num == 4 && (cell > 1 && cell < 8)) ||
           (num == 5 && (cell > 1 && cell < 8)) ||
@@ -273,8 +274,8 @@ export class AppComponent implements OnInit, AfterViewInit {
           (num == 7 && (cell > 3 && cell < 6))
         ) {
           data.weight = 15;
-        }
-        else if ((num == 1 && (cell > 3 && cell < 6)) ||
+        } else if (
+          (num == 1 && (cell > 3 && cell < 6)) ||
           (num == 2 && (cell > 2 && cell < 7)) ||
           (num == 3 && (cell > 1 && cell < 8)) ||
           (num == 4 && (cell > 1 && cell < 9)) ||
@@ -284,11 +285,9 @@ export class AppComponent implements OnInit, AfterViewInit {
           (num == 8 && (cell > 3 && cell < 6))
         ) {
           data.weight = 10;
-        }
-        else if (num == 0 || cell == 0 || cell == 9 || num == 9) {
+        } else if (num == 0 || cell == 0 || cell == 9 || num == 9) {
           data.weight = 0;
-        }
-        else {
+        } else {
           data.weight = 5;
         }
 
